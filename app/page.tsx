@@ -246,7 +246,7 @@ export default function Home() {
                             )}
                             {hotel.url && (
                               
-                                href={hotel.url}
+                               <a href={hotel.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 style={{ fontSize: "0.68rem", color: "#999", marginTop: "10px", display: "inline-block", textDecoration: "none" }}
