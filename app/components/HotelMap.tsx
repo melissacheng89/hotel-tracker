@@ -210,7 +210,7 @@ export default function HotelMap({ hotels }: Props) {
 
             {selected.url && (
               
-                href={selected.url}
+                <a href={selected.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ fontSize: "0.7rem", color: "#FAF7F2", textDecoration: "none", borderBottom: "1px solid #555", paddingBottom: "1px" }}
