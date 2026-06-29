@@ -94,88 +94,110 @@ export default function Home() {
   }) => (
     <button
       onClick={onClick}
-      className={`px-3 py-1.5 rounded-full text-xs tracking-wide transition-all border ${
-        active
-          ? "bg-[#1a1a1a] text-[#FAF7F2] border-[#1a1a1a]"
-          : "bg-transparent text-[#666] border-[#d4cfc8] hover:border-[#1a1a1a] hover:text-[#1a1a1a]"
-      }`}
+      style={{
+        padding: "6px 14px",
+        borderRadius: "999px",
+        fontSize: "0.7rem",
+        letterSpacing: "0.05em",
+        border: "1px solid",
+        whiteSpace: "nowrap",
+        flexShrink: 0,
+        cursor: "pointer",
+        transition: "all 0.15s",
+        background: active ? "#1a1a1a" : "transparent",
+        color: active ? "#FAF7F2" : "#666",
+        borderColor: active ? "#1a1a1a" : "#d4cfc8",
+      }}
     >
       {label}
     </button>
   );
 
+  const FilterRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <span style={{ fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#999", width: "52px", flexShrink: 0 }}>
+        {label}
+      </span>
+      <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "2px", msOverflowStyle: "none", scrollbarWidth: "none" }}>
+        {children}
+      </div>
+    </div>
+  );
+
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "#FAF7F2" }}>
-      <header className="border-b border-[#e8e2d9] px-8 py-6">
-        <div className="max-w-6xl mx-auto flex items-end justify-between">
-          <div>
-            <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "3.5rem", fontWeight: 300, letterSpacing: "-0.02em", color: "#1a1a1a", lineHeight: 1 }}>
-              Checked In
-            </h1>
-            <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginTop: "6px" }}>
-              Your personal hotel tracker
-            </p>
-            <p style={{ fontSize: "0.7rem", color: "#bbb", marginTop: "4px" }}>
-              by Melissa Cheng
-            </p>
-          </div>
-          <div className="text-right">
-            <p style={{ fontSize: "0.75rem", color: "#999" }}>
-              <span style={{ color: "#1a1a1a", fontWeight: 500 }}>{hotels.filter((h) => h.status === "Visited").length}</span> visited
-              <span style={{ margin: "0 8px", color: "#d4cfc8" }}>·</span>
-              <span style={{ color: "#1a1a1a", fontWeight: 500 }}>{hotels.filter((h) => h.status === "Bucket List").length}</span> to go
-            </p>
+    <main style={{ minHeight: "100vh", backgroundColor: "#FAF7F2" }}>
+      <header style={{ borderBottom: "1px solid #e8e2d9", padding: "20px 24px" }}>
+        <div style={{ maxWidth: "1152px", margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "16px" }}>
+            <div>
+              <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(2rem, 8vw, 3.5rem)", fontWeight: 300, letterSpacing: "-0.02em", color: "#1a1a1a", lineHeight: 1 }}>
+                Checked In
+              </h1>
+              <p style={{ fontSize: "0.6rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginTop: "6px" }}>
+                Your personal hotel tracker
+              </p>
+              <p style={{ fontSize: "0.65rem", color: "#bbb", marginTop: "3px" }}>
+                by Melissa Cheng
+              </p>
+            </div>
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
+              <p style={{ fontSize: "0.7rem", color: "#999" }}>
+                <span style={{ color: "#1a1a1a", fontWeight: 500 }}>{hotels.filter((h) => h.status === "Visited").length}</span> visited
+                <span style={{ margin: "0 6px", color: "#d4cfc8" }}>·</span>
+                <span style={{ color: "#1a1a1a", fontWeight: 500 }}>{hotels.filter((h) => h.status === "Bucket List").length}</span> to go
+              </p>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-8 py-8">
-        <div className="flex items-start justify-between gap-8 mb-10">
-          <div className="space-y-3 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", width: "3.5rem", flexShrink: 0 }}>Status</span>
+      <div style={{ maxWidth: "1152px", margin: "0 auto", padding: "24px 24px" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", marginBottom: "32px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, minWidth: 0 }}>
+            <FilterRow label="Status">
               {(["All", "Bucket List", "Visited"] as StatusFilter[]).map((f) => (
                 <FilterPill key={f} label={f} active={statusFilter === f} onClick={() => setStatusFilter(f)} />
               ))}
-            </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", width: "3.5rem", flexShrink: 0 }}>Region</span>
+            </FilterRow>
+            <FilterRow label="Region">
               <FilterPill label="All" active={regionFilter === "All"} onClick={() => { setRegionFilter("All"); setCountryFilter("All"); }} />
               {allRegions.map((r) => (
                 <FilterPill key={r} label={r} active={regionFilter === r} onClick={() => { setRegionFilter(r); setCountryFilter("All"); }} />
               ))}
-            </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", width: "3.5rem", flexShrink: 0 }}>Country</span>
+            </FilterRow>
+            <FilterRow label="Country">
               <FilterPill label="All" active={countryFilter === "All"} onClick={() => setCountryFilter("All")} />
               {allCountries.map((c) => (
                 <FilterPill key={c} label={c} active={countryFilter === c} onClick={() => setCountryFilter(c)} />
               ))}
-            </div>
+            </FilterRow>
           </div>
 
-          <div className="flex gap-1 border border-[#e8e2d9] rounded-full p-1 shrink-0">
-            <button
-              onClick={() => setView("list")}
-              className={`px-4 py-1.5 rounded-full text-xs tracking-wide transition-all ${
-                view === "list" ? "bg-[#1a1a1a] text-[#FAF7F2]" : "text-[#999] hover:text-[#1a1a1a]"
-              }`}
-            >
-              List
-            </button>
-            <button
-              onClick={() => setView("map")}
-              className={`px-4 py-1.5 rounded-full text-xs tracking-wide transition-all ${
-                view === "map" ? "bg-[#1a1a1a] text-[#FAF7F2]" : "text-[#999] hover:text-[#1a1a1a]"
-              }`}
-            >
-              Map
-            </button>
+          <div style={{ display: "flex", gap: "4px", border: "1px solid #e8e2d9", borderRadius: "999px", padding: "4px", flexShrink: 0 }}>
+            {(["list", "map"] as View[]).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                style={{
+                  padding: "6px 16px",
+                  borderRadius: "999px",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.05em",
+                  cursor: "pointer",
+                  border: "none",
+                  background: view === v ? "#1a1a1a" : "transparent",
+                  color: view === v ? "#FAF7F2" : "#999",
+                  textTransform: "capitalize",
+                }}
+              >
+                {v}
+              </button>
+            ))}
           </div>
         </div>
 
         {loading ? (
-          <p style={{ color: "#999", fontSize: "0.875rem", letterSpacing: "0.05em" }}>Loading...</p>
+          <p style={{ color: "#999", fontSize: "0.875rem" }}>Loading...</p>
         ) : view === "map" ? (
           <HotelMap hotels={filtered} />
         ) : filtered.length === 0 ? (
@@ -184,27 +206,29 @@ export default function Home() {
           <div style={{ display: "flex", flexDirection: "column", gap: "4rem" }}>
             {sortedRegions.map((region) => (
               <div key={region}>
-                <h2 style={{ fontFamily: "var(--font-cormorant)", fontSize: "2.25rem", fontWeight: 300, color: "#1a1a1a", marginBottom: "2rem" }}>
+                <h2 style={{ fontFamily: "var(--font-cormorant)", fontSize: "2rem", fontWeight: 300, color: "#1a1a1a", marginBottom: "1.5rem" }}>
                   {region}
                 </h2>
-                <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
                   {Object.keys(grouped[region]).sort().map((country) => (
                     <div key={country}>
-                      <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#999", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: "1px solid #e8e2d9" }}>
+                      <p style={{ fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#999", marginBottom: "0.75rem", paddingBottom: "0.5rem", borderBottom: "1px solid #e8e2d9" }}>
                         {country}
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {grouped[region][country].map((hotel) => (
-                          <div key={hotel.id} style={{ border: "1px solid #e8e2d9", borderRadius: "8px", padding: "1.25rem", background: "white", transition: "border-color 0.2s" }}
+                          <div
+                            key={hotel.id}
+                            style={{ border: "1px solid #e8e2d9", borderRadius: "8px", padding: "1.25rem", background: "white" }}
                             onMouseEnter={e => (e.currentTarget.style.borderColor = "#1a1a1a")}
                             onMouseLeave={e => (e.currentTarget.style.borderColor = "#e8e2d9")}
                           >
-                            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                              <h3 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.2rem", fontWeight: 300, color: "#1a1a1a", lineHeight: 1.3 }}>
+                            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "8px", marginBottom: "6px" }}>
+                              <h3 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.15rem", fontWeight: 300, color: "#1a1a1a", lineHeight: 1.3 }}>
                                 {hotel.name}
                               </h3>
                               <span style={{
-                                flexShrink: 0, fontSize: "0.65rem", padding: "2px 8px", borderRadius: "999px", border: "1px solid",
+                                flexShrink: 0, fontSize: "0.6rem", padding: "2px 8px", borderRadius: "999px", border: "1px solid",
                                 ...(hotel.status === "Visited"
                                   ? { borderColor: "#6ee7b7", color: "#065f46", background: "#ecfdf5" }
                                   : { borderColor: "#e8e2d9", color: "#999", background: "transparent" })
@@ -212,16 +236,20 @@ export default function Home() {
                                 {hotel.status === "Visited" ? "✓" : "✦"}
                               </span>
                             </div>
-                            <p style={{ fontSize: "0.75rem", color: "#999" }}>
+                            <p style={{ fontSize: "0.72rem", color: "#999" }}>
                               {[hotel.city, hotel.stateArea].filter(Boolean).join(", ")}
                             </p>
                             {hotel.notes && (
-                              <p style={{ fontSize: "0.7rem", color: "#aaa", marginTop: "0.5rem", fontStyle: "italic", lineHeight: 1.5 }}>
+                              <p style={{ fontSize: "0.68rem", color: "#aaa", marginTop: "6px", fontStyle: "italic", lineHeight: 1.5 }}>
                                 {hotel.notes}
                               </p>
                             )}
                             {hotel.url && (
-                              <a href={hotel.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.7rem", color: "#999", marginTop: "0.75rem", display: "inline-block", textDecoration: "none" }}
+                              
+                                href={hotel.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ fontSize: "0.68rem", color: "#999", marginTop: "10px", display: "inline-block", textDecoration: "none" }}
                                 onMouseEnter={e => ((e.target as HTMLElement).style.color = "#1a1a1a")}
                                 onMouseLeave={e => ((e.target as HTMLElement).style.color = "#999")}
                               >
