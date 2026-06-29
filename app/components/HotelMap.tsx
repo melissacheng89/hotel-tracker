@@ -81,12 +81,54 @@ export default function HotelMap({ hotels }: Props) {
           type: "FeatureCollection",
           features,
         },
+        cluster: true,
+        clusterMaxZoom: 8,
+        clusterRadius: 40,
       });
 
+      // Cluster circles
+      map.current!.addLayer({
+        id: "clusters",
+        type: "circle",
+        source: "hotels",
+        filter: ["has", "point_count"],
+        paint: {
+          "circle-color": "#4A5F8A",
+          "circle-radius": [
+            "step",
+            ["get", "point_count"],
+            18, 5,
+            24, 15,
+            30,
+          ],
+          "circle-opacity": 0.85,
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#A8B4D0",
+        },
+      });
+
+      // Cluster count labels
+      map.current!.addLayer({
+        id: "cluster-count",
+        type: "symbol",
+        source: "hotels",
+        filter: ["has", "point_count"],
+        layout: {
+          "text-field": "{point_count_abbreviated}",
+          "text-size": 12,
+          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+        },
+        paint: {
+          "text-color": "#FAF7F2",
+        },
+      });
+
+      // Individual hotel points
       map.current!.addLayer({
         id: "hotels-layer",
         type: "circle",
         source: "hotels",
+        filter: ["!", ["has", "point_count"]],
         paint: {
           "circle-radius": [
             "interpolate",
@@ -103,14 +145,41 @@ export default function HotelMap({ hotels }: Props) {
         },
       });
 
+      // Click cluster to zoom in
+      map.current!.on("click", "clusters", (e) => {
+        const features = map.current!.queryRenderedFeatures(e.point, {
+          layers: ["clusters"],
+        });
+        const clusterId = features[0].properties!.cluster_id;
+        (map.current!.getSource("hotels") as mapboxgl.GeoJSONSource).getClusterExpansionZoom(
+          clusterId,
+          (err, zoom) => {
+            if (err) return;
+            map.current!.easeTo({
+              center: (features[0].geometry as GeoJSON.Point).coordinates as [number, number],
+              zoom: zoom!,
+            });
+          }
+        );
+      });
+
+      // Cursor on cluster hover
+      map.current!.on("mouseenter", "clusters", () => {
+        map.current!.getCanvas().style.cursor = "pointer";
+      });
+      map.current!.on("mouseleave", "clusters", () => {
+        map.current!.getCanvas().style.cursor = "";
+      });
+
+      // Cursor on hotel hover
       map.current!.on("mouseenter", "hotels-layer", () => {
         map.current!.getCanvas().style.cursor = "pointer";
       });
-
       map.current!.on("mouseleave", "hotels-layer", () => {
         map.current!.getCanvas().style.cursor = "";
       });
 
+      // Click individual hotel
       map.current!.on("click", "hotels-layer", (e) => {
         if (e.features && e.features[0]) {
           const props = e.features[0].properties!;
@@ -128,9 +197,10 @@ export default function HotelMap({ hotels }: Props) {
         }
       });
 
+      // Click map background to deselect
       map.current!.on("click", (e) => {
         const features = map.current!.queryRenderedFeatures(e.point, {
-          layers: ["hotels-layer"],
+          layers: ["hotels-layer", "clusters"],
         });
         if (features.length === 0) {
           setSelected(null);
@@ -209,8 +279,8 @@ export default function HotelMap({ hotels }: Props) {
             </span>
 
             {selected.url && (
-              
-                <a href={selected.url}
+              <a 
+                href={selected.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ fontSize: "0.7rem", color: "#FAF7F2", textDecoration: "none", borderBottom: "1px solid #555", paddingBottom: "1px" }}
