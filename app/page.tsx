@@ -22,6 +22,10 @@ type Hotel = {
 type StatusFilter = "All" | "Bucket List" | "Visited";
 type View = "list" | "map";
 
+const ACCENT = "#4A5F8A";
+const ACCENT_LIGHT = "#E8ECF4";
+const ACCENT_BORDER = "#A8B4D0";
+
 export default function Home() {
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
@@ -104,9 +108,9 @@ export default function Home() {
         flexShrink: 0,
         cursor: "pointer",
         transition: "all 0.15s",
-        background: active ? "#1a1a1a" : "transparent",
+        background: active ? ACCENT : "transparent",
         color: active ? "#FAF7F2" : "#666",
-        borderColor: active ? "#1a1a1a" : "#d4cfc8",
+        borderColor: active ? ACCENT : "#d4cfc8",
       }}
     >
       {label}
@@ -185,7 +189,7 @@ export default function Home() {
                   letterSpacing: "0.05em",
                   cursor: "pointer",
                   border: "none",
-                  background: view === v ? "#1a1a1a" : "transparent",
+                  background: view === v ? ACCENT : "transparent",
                   color: view === v ? "#FAF7F2" : "#999",
                   textTransform: "capitalize",
                 }}
@@ -219,9 +223,9 @@ export default function Home() {
                         {grouped[region][country].map((hotel) => (
                           <div
                             key={hotel.id}
-                            style={{ border: "1px solid #e8e2d9", borderRadius: "8px", padding: "1.25rem", background: "white" }}
-                            onMouseEnter={e => (e.currentTarget.style.borderColor = "#1a1a1a")}
-                            onMouseLeave={e => (e.currentTarget.style.borderColor = "#e8e2d9")}
+                            style={{ border: `1px solid ${ACCENT_BORDER}`, borderRadius: "8px", padding: "1.25rem", background: "white" }}
+                            onMouseEnter={e => (e.currentTarget.style.borderColor = ACCENT)}
+                            onMouseLeave={e => (e.currentTarget.style.borderColor = ACCENT_BORDER)}
                           >
                             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "8px", marginBottom: "6px" }}>
                               <h3 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.15rem", fontWeight: 300, color: "#1a1a1a", lineHeight: 1.3 }}>
@@ -231,7 +235,7 @@ export default function Home() {
                                 flexShrink: 0, fontSize: "0.6rem", padding: "2px 8px", borderRadius: "999px", border: "1px solid",
                                 ...(hotel.status === "Visited"
                                   ? { borderColor: "#6ee7b7", color: "#065f46", background: "#ecfdf5" }
-                                  : { borderColor: "#e8e2d9", color: "#999", background: "transparent" })
+                                  : { borderColor: ACCENT_BORDER, color: ACCENT, background: ACCENT_LIGHT })
                               }}>
                                 {hotel.status === "Visited" ? "✓" : "✦"}
                               </span>
@@ -246,12 +250,12 @@ export default function Home() {
                             )}
                             {hotel.url && (
                               
-                               <a href={hotel.url}
+                                href={hotel.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style={{ fontSize: "0.68rem", color: "#999", marginTop: "10px", display: "inline-block", textDecoration: "none" }}
+                                style={{ fontSize: "0.68rem", color: ACCENT, marginTop: "10px", display: "inline-block", textDecoration: "none" }}
                                 onMouseEnter={e => ((e.target as HTMLElement).style.color = "#1a1a1a")}
-                                onMouseLeave={e => ((e.target as HTMLElement).style.color = "#999")}
+                                onMouseLeave={e => ((e.target as HTMLElement).style.color = ACCENT)}
                               >
                                 Visit site →
                               </a>
