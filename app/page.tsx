@@ -113,7 +113,7 @@ export default function Home() {
               Checked In
             </h1>
             <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginTop: "6px" }}>
-              Your personal hotel black book
+              Your personal hotel tracker
             </p>
             <p style={{ fontSize: "0.7rem", color: "#bbb", marginTop: "4px" }}>
               by Melissa Cheng
