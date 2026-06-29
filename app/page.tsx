@@ -249,7 +249,7 @@ export default function Home() {
                               </p>
                             )}
                             {hotel.url && (
-                              
+                              <a 
                                 href={hotel.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
