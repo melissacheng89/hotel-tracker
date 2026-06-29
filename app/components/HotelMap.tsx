@@ -69,7 +69,7 @@ export default function HotelMap({ hotels }: Props) {
             country: hotel.country,
             status: hotel.status,
             notes: hotel.notes,
-            url: hotel.url,
+            url: hotel.url || "",
             color: hotel.status === "Visited" ? "#059669" : "#92400e",
             borderColor: hotel.status === "Visited" ? "#34d399" : "#d97706",
           },
@@ -117,11 +117,11 @@ export default function HotelMap({ hotels }: Props) {
           setSelected({
             id: props.id,
             name: props.name,
-            city: props.city,
-            stateArea: props.stateArea,
-            country: props.country,
-            status: props.status,
-            notes: props.notes,
+            city: props.city || "",
+            stateArea: props.stateArea || "",
+            country: props.country || "",
+            status: props.status || "",
+            notes: props.notes || "",
             url: props.url || "",
             region: "",
           });
@@ -147,9 +147,7 @@ export default function HotelMap({ hotels }: Props) {
   }, [hotels]);
 
   return (
-    <div
-      style={{ position: "relative", width: "100%", height: "600px", borderRadius: "12px", border: "1px solid #e8e2d9" }}
-    >
+    <div style={{ position: "relative", width: "100%", height: "600px", borderRadius: "12px", border: "1px solid #e8e2d9" }}>
       {loading && (
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#FAF7F2", zIndex: 10, borderRadius: "12px" }}>
           <p style={{ color: "#999", fontSize: "0.875rem" }}>Loading map...</p>
@@ -162,65 +160,64 @@ export default function HotelMap({ hotels }: Props) {
           position: "absolute",
           bottom: "16px",
           left: "16px",
-          right: "16px",
           zIndex: 10,
-          background: "#FAF7F2",
-          border: "1px solid #1a1a1a",
+          background: "#1a1a1a",
           borderRadius: "12px",
-          padding: "16px",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.12)",
-          maxWidth: "360px",
+          padding: "18px 20px",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+          width: "280px",
         }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px" }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{
-                fontFamily: "var(--font-cormorant)",
-                fontSize: "1.3rem",
-                fontWeight: 300,
-                color: "#1a1a1a",
-                lineHeight: 1.2,
-                marginBottom: "4px",
-              }}>
-                {selected.name}
-              </p>
-              <p style={{ fontSize: "0.72rem", color: "#999", marginBottom: "8px" }}>
-                {[selected.city, selected.stateArea, selected.country].filter(Boolean).join(", ")}
-              </p>
-              {selected.notes && (
-                <p style={{ fontSize: "0.68rem", color: "#aaa", fontStyle: "italic", lineHeight: 1.5, marginBottom: "8px" }}>
-                  {selected.notes}
-                </p>
-              )}
-              {selected.url && (
-                
-                  href={selected.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ fontSize: "0.7rem", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #1a1a1a", paddingBottom: "1px" }}
-                >
-                  Visit site →
-                </a>
-              )}
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", flexShrink: 0 }}>
-              <button
-                onClick={() => setSelected(null)}
-                style={{ fontSize: "0.8rem", color: "#999", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }}
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px", marginBottom: "10px" }}>
+            <p style={{
+              fontFamily: "var(--font-cormorant)",
+              fontSize: "1.4rem",
+              fontWeight: 300,
+              color: "#FAF7F2",
+              lineHeight: 1.2,
+            }}>
+              {selected.name}
+            </p>
+            <button
+              onClick={() => setSelected(null)}
+              style={{ fontSize: "0.8rem", color: "#666", background: "none", border: "none", cursor: "pointer", flexShrink: 0, marginTop: "2px" }}
+            >
+              ✕
+            </button>
+          </div>
+
+          <p style={{ fontSize: "0.72rem", color: "#888", marginBottom: "6px" }}>
+            {[selected.city, selected.stateArea, selected.country].filter(Boolean).join(", ")}
+          </p>
+
+          {selected.notes && (
+            <p style={{ fontSize: "0.68rem", color: "#666", fontStyle: "italic", lineHeight: 1.5, marginBottom: "10px" }}>
+              {selected.notes}
+            </p>
+          )}
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #333" }}>
+            <span style={{
+              fontSize: "0.65rem",
+              padding: "3px 10px",
+              borderRadius: "999px",
+              border: "1px solid",
+              ...(selected.status === "Visited"
+                ? { borderColor: "#34d399", color: "#34d399" }
+                : { borderColor: "#d97706", color: "#d97706" })
+            }}>
+              {selected.status === "Visited" ? "✓ Visited" : "Wishlist"}
+            </span>
+
+            {selected.url && (
+              
+                href={selected.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: "0.7rem", color: "#FAF7F2", textDecoration: "none", borderBottom: "1px solid #555", paddingBottom: "1px" }}
               >
-                ✕
-              </button>
-              <span style={{
-                fontSize: "0.65rem",
-                padding: "3px 10px",
-                borderRadius: "999px",
-                border: "1px solid",
-                ...(selected.status === "Visited"
-                  ? { borderColor: "#6ee7b7", color: "#065f46", background: "#ecfdf5" }
-                  : { borderColor: "#e8e2d9", color: "#999", background: "transparent" })
-              }}>
-                {selected.status === "Visited" ? "✓ Visited" : "Wishlist"}
-              </span>
-            </div>
+                Visit site →
+              </a>
+            )}
           </div>
         </div>
       )}
