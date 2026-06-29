@@ -109,21 +109,21 @@ export default function Home() {
       <header className="border-b border-[#e8e2d9] px-8 py-6">
         <div className="max-w-6xl mx-auto flex items-end justify-between">
           <div>
-            <h1 className="text-5xl font-light tracking-tight text-[#1a1a1a]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "3.5rem", fontWeight: 300, letterSpacing: "-0.02em", color: "#1a1a1a", lineHeight: 1 }}>
               Checked In
             </h1>
-            <p className="text-xs tracking-widest text-[#999] uppercase mt-1">
-              A personal hotel black book
+            <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginTop: "6px" }}>
+              Your personal hotel black book
             </p>
-            <p className="text-xs text-[#bbb] mt-1">
-  by Melissa Cheng
-</p>
+            <p style={{ fontSize: "0.7rem", color: "#bbb", marginTop: "4px" }}>
+              by Melissa Cheng
+            </p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-[#999]">
-              <span className="text-[#1a1a1a] font-medium">{hotels.filter((h) => h.status === "Visited").length}</span> visited
-              <span className="mx-2 text-[#d4cfc8]">·</span>
-              <span className="text-[#1a1a1a] font-medium">{hotels.filter((h) => h.status === "Bucket List").length}</span> to go
+            <p style={{ fontSize: "0.75rem", color: "#999" }}>
+              <span style={{ color: "#1a1a1a", fontWeight: 500 }}>{hotels.filter((h) => h.status === "Visited").length}</span> visited
+              <span style={{ margin: "0 8px", color: "#d4cfc8" }}>·</span>
+              <span style={{ color: "#1a1a1a", fontWeight: 500 }}>{hotels.filter((h) => h.status === "Bucket List").length}</span> to go
             </p>
           </div>
         </div>
@@ -133,20 +133,20 @@ export default function Home() {
         <div className="flex items-start justify-between gap-8 mb-10">
           <div className="space-y-3 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs uppercase tracking-widest text-[#999] w-14 shrink-0">Status</span>
+              <span style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", width: "3.5rem", flexShrink: 0 }}>Status</span>
               {(["All", "Bucket List", "Visited"] as StatusFilter[]).map((f) => (
                 <FilterPill key={f} label={f} active={statusFilter === f} onClick={() => setStatusFilter(f)} />
               ))}
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs uppercase tracking-widest text-[#999] w-14 shrink-0">Region</span>
+              <span style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", width: "3.5rem", flexShrink: 0 }}>Region</span>
               <FilterPill label="All" active={regionFilter === "All"} onClick={() => { setRegionFilter("All"); setCountryFilter("All"); }} />
               {allRegions.map((r) => (
                 <FilterPill key={r} label={r} active={regionFilter === r} onClick={() => { setRegionFilter(r); setCountryFilter("All"); }} />
               ))}
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs uppercase tracking-widest text-[#999] w-14 shrink-0">Country</span>
+              <span style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", width: "3.5rem", flexShrink: 0 }}>Country</span>
               <FilterPill label="All" active={countryFilter === "All"} onClick={() => setCountryFilter("All")} />
               {allCountries.map((c) => (
                 <FilterPill key={c} label={c} active={countryFilter === c} onClick={() => setCountryFilter(c)} />
@@ -175,47 +175,56 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <p className="text-[#999] text-sm tracking-wide">Loading...</p>
+          <p style={{ color: "#999", fontSize: "0.875rem", letterSpacing: "0.05em" }}>Loading...</p>
         ) : view === "map" ? (
           <HotelMap hotels={filtered} />
         ) : filtered.length === 0 ? (
-          <p className="text-[#999] text-sm">No hotels match these filters.</p>
+          <p style={{ color: "#999", fontSize: "0.875rem" }}>No hotels match these filters.</p>
         ) : (
-          <div className="space-y-16">
+          <div style={{ display: "flex", flexDirection: "column", gap: "4rem" }}>
             {sortedRegions.map((region) => (
               <div key={region}>
-                <h2 className="text-3xl font-light mb-8" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#1a1a1a" }}>
+                <h2 style={{ fontFamily: "var(--font-cormorant)", fontSize: "2.25rem", fontWeight: 300, color: "#1a1a1a", marginBottom: "2rem" }}>
                   {region}
                 </h2>
-                <div className="space-y-10">
+                <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
                   {Object.keys(grouped[region]).sort().map((country) => (
                     <div key={country}>
-                      <p className="text-xs uppercase tracking-widest text-[#999] mb-4 pb-2 border-b border-[#e8e2d9]">
+                      <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#999", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: "1px solid #e8e2d9" }}>
                         {country}
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {grouped[region][country].map((hotel) => (
-                          <div key={hotel.id} className="group border border-[#e8e2d9] rounded-lg p-5 hover:border-[#1a1a1a] transition-all duration-200 bg-white">
-                            <div className="flex items-start justify-between gap-2 mb-2">
-                              <h3 className="font-light text-[#1a1a1a] leading-snug text-lg" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                          <div key={hotel.id} style={{ border: "1px solid #e8e2d9", borderRadius: "8px", padding: "1.25rem", background: "white", transition: "border-color 0.2s" }}
+                            onMouseEnter={e => (e.currentTarget.style.borderColor = "#1a1a1a")}
+                            onMouseLeave={e => (e.currentTarget.style.borderColor = "#e8e2d9")}
+                          >
+                            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                              <h3 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.2rem", fontWeight: 300, color: "#1a1a1a", lineHeight: 1.3 }}>
                                 {hotel.name}
                               </h3>
-                              <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full border ${
-                                hotel.status === "Visited"
-                                  ? "border-emerald-300 text-emerald-700 bg-emerald-50"
-                                  : "border-[#e8e2d9] text-[#999]"
-                              }`}>
+                              <span style={{
+                                flexShrink: 0, fontSize: "0.65rem", padding: "2px 8px", borderRadius: "999px", border: "1px solid",
+                                ...(hotel.status === "Visited"
+                                  ? { borderColor: "#6ee7b7", color: "#065f46", background: "#ecfdf5" }
+                                  : { borderColor: "#e8e2d9", color: "#999", background: "transparent" })
+                              }}>
                                 {hotel.status === "Visited" ? "✓" : "✦"}
                               </span>
                             </div>
-                            <p className="text-xs text-[#999]">
+                            <p style={{ fontSize: "0.75rem", color: "#999" }}>
                               {[hotel.city, hotel.stateArea].filter(Boolean).join(", ")}
                             </p>
                             {hotel.notes && (
-                              <p className="text-xs text-[#aaa] mt-2 italic leading-relaxed">{hotel.notes}</p>
+                              <p style={{ fontSize: "0.7rem", color: "#aaa", marginTop: "0.5rem", fontStyle: "italic", lineHeight: 1.5 }}>
+                                {hotel.notes}
+                              </p>
                             )}
                             {hotel.url && (
-                              <a href={hotel.url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#999] hover:text-[#1a1a1a] mt-3 inline-block transition-colors">
+                              <a href={hotel.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.7rem", color: "#999", marginTop: "0.75rem", display: "inline-block", textDecoration: "none" }}
+                                onMouseEnter={e => ((e.target as HTMLElement).style.color = "#1a1a1a")}
+                                onMouseLeave={e => ((e.target as HTMLElement).style.color = "#999")}
+                              >
                                 Visit site →
                               </a>
                             )}
