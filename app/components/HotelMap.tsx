@@ -14,6 +14,7 @@ type Hotel = {
   city: string;
   status: string;
   notes: string;
+  url: string;
 };
 
 type Props = {
@@ -68,6 +69,7 @@ export default function HotelMap({ hotels }: Props) {
             country: hotel.country,
             status: hotel.status,
             notes: hotel.notes,
+            url: hotel.url,
             color: hotel.status === "Visited" ? "#059669" : "#92400e",
             borderColor: hotel.status === "Visited" ? "#34d399" : "#d97706",
           },
@@ -120,6 +122,7 @@ export default function HotelMap({ hotels }: Props) {
             country: props.country,
             status: props.status,
             notes: props.notes,
+            url: props.url || "",
             region: "",
           });
         }
@@ -145,56 +148,76 @@ export default function HotelMap({ hotels }: Props) {
 
   return (
     <div
-      className="relative w-full rounded-xl"
-      style={{ height: "600px", border: "1px solid #e8e2d9" }}
+      style={{ position: "relative", width: "100%", height: "600px", borderRadius: "12px", border: "1px solid #e8e2d9" }}
     >
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center z-10 rounded-xl" style={{ background: "#FAF7F2" }}>
-          <p className="text-sm" style={{ color: "#999" }}>Loading map...</p>
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#FAF7F2", zIndex: 10, borderRadius: "12px" }}>
+          <p style={{ color: "#999", fontSize: "0.875rem" }}>Loading map...</p>
         </div>
       )}
-      <div ref={mapContainer} className="w-full h-full rounded-xl" />
+      <div ref={mapContainer} style={{ width: "100%", height: "100%", borderRadius: "12px" }} />
 
       {selected && (
-        <div
-          className="absolute bottom-4 left-4 z-10 rounded-xl px-4 py-3 max-w-xs"
-          style={{ background: "#FAF7F2", border: "1px solid #e8e2d9" }}
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p
-                className="text-sm leading-snug font-light"
-                style={{ color: "#1a1a1a", fontFamily: "'Cormorant Garamond', serif", fontSize: "1rem" }}
-              >
+        <div style={{
+          position: "absolute",
+          bottom: "16px",
+          left: "16px",
+          right: "16px",
+          zIndex: 10,
+          background: "#FAF7F2",
+          border: "1px solid #1a1a1a",
+          borderRadius: "12px",
+          padding: "16px",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.12)",
+          maxWidth: "360px",
+        }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{
+                fontFamily: "var(--font-cormorant)",
+                fontSize: "1.3rem",
+                fontWeight: 300,
+                color: "#1a1a1a",
+                lineHeight: 1.2,
+                marginBottom: "4px",
+              }}>
                 {selected.name}
               </p>
-              <p className="text-xs mt-0.5" style={{ color: "#999" }}>
-                {[selected.city, selected.stateArea, selected.country]
-                  .filter(Boolean)
-                  .join(", ")}
+              <p style={{ fontSize: "0.72rem", color: "#999", marginBottom: "8px" }}>
+                {[selected.city, selected.stateArea, selected.country].filter(Boolean).join(", ")}
               </p>
               {selected.notes && (
-                <p className="text-xs mt-1 italic" style={{ color: "#aaa" }}>
+                <p style={{ fontSize: "0.68rem", color: "#aaa", fontStyle: "italic", lineHeight: 1.5, marginBottom: "8px" }}>
                   {selected.notes}
                 </p>
               )}
+              {selected.url && (
+                
+                  href={selected.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontSize: "0.7rem", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #1a1a1a", paddingBottom: "1px" }}
+                >
+                  Visit site →
+                </a>
+              )}
             </div>
-            <div className="flex flex-col items-end gap-2">
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", flexShrink: 0 }}>
               <button
                 onClick={() => setSelected(null)}
-                className="text-xs"
-                style={{ color: "#999" }}
+                style={{ fontSize: "0.8rem", color: "#999", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }}
               >
                 ✕
               </button>
-              <span
-                className="text-xs px-2 py-0.5 rounded-full border"
-                style={
-                  selected.status === "Visited"
-                    ? { borderColor: "#6ee7b7", color: "#065f46", background: "#ecfdf5" }
-                    : { borderColor: "#e8e2d9", color: "#999", background: "transparent" }
-                }
-              >
+              <span style={{
+                fontSize: "0.65rem",
+                padding: "3px 10px",
+                borderRadius: "999px",
+                border: "1px solid",
+                ...(selected.status === "Visited"
+                  ? { borderColor: "#6ee7b7", color: "#065f46", background: "#ecfdf5" }
+                  : { borderColor: "#e8e2d9", color: "#999", background: "transparent" })
+              }}>
                 {selected.status === "Visited" ? "✓ Visited" : "Wishlist"}
               </span>
             </div>
@@ -202,16 +225,26 @@ export default function HotelMap({ hotels }: Props) {
         </div>
       )}
 
-      <div
-        className="absolute bottom-4 right-12 z-10 rounded-lg px-3 py-2 flex gap-3 text-xs"
-        style={{ background: "#FAF7F2", border: "1px solid #e8e2d9", color: "#999" }}
-      >
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: "#92400e" }} />
+      <div style={{
+        position: "absolute",
+        bottom: "16px",
+        right: "48px",
+        zIndex: 10,
+        background: "#FAF7F2",
+        border: "1px solid #e8e2d9",
+        borderRadius: "8px",
+        padding: "6px 12px",
+        display: "flex",
+        gap: "12px",
+        fontSize: "0.7rem",
+        color: "#999",
+      }}>
+        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#92400e", display: "inline-block" }} />
           Wishlist
         </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: "#059669" }} />
+        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#059669", display: "inline-block" }} />
           Visited
         </span>
       </div>
