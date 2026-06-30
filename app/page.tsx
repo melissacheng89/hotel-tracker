@@ -33,6 +33,7 @@ export default function Home() {
   const [countryFilter, setCountryFilter] = useState<string>("All");
   const [view, setView] = useState<View>("list");
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("/api/hotels")
@@ -67,11 +68,19 @@ export default function Home() {
     ),
   ];
 
+  const searchLower = search.trim().toLowerCase();
+
   const filtered = hotels.filter((h) => {
     const matchesStatus = statusFilter === "All" || h.status === statusFilter;
     const matchesRegion = regionFilter === "All" || h.region === regionFilter;
     const matchesCountry = countryFilter === "All" || h.country === countryFilter;
-    return matchesStatus && matchesRegion && matchesCountry;
+    const matchesSearch =
+      searchLower === "" ||
+      h.name.toLowerCase().includes(searchLower) ||
+      h.city.toLowerCase().includes(searchLower) ||
+      h.stateArea.toLowerCase().includes(searchLower) ||
+      h.country.toLowerCase().includes(searchLower);
+    return matchesStatus && matchesRegion && matchesCountry && matchesSearch;
   });
 
   const grouped = filtered.reduce((acc, hotel) => {
@@ -156,6 +165,27 @@ export default function Home() {
       </header>
 
       <div style={{ maxWidth: "1152px", margin: "0 auto", padding: "24px 24px" }}>
+        <div style={{ marginBottom: "20px" }}>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search hotels, cities, countries..."
+            style={{
+              width: "100%",
+              padding: "10px 16px",
+              borderRadius: "8px",
+              border: "1px solid #e8e2d9",
+              fontSize: "0.85rem",
+              background: "white",
+              color: "#1a1a1a",
+              outline: "none",
+            }}
+            onFocus={(e) => (e.target.style.borderColor = ACCENT)}
+            onBlur={(e) => (e.target.style.borderColor = "#e8e2d9")}
+          />
+        </div>
+
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", marginBottom: "32px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, minWidth: 0 }}>
             <FilterRow label="Status">
@@ -249,7 +279,7 @@ export default function Home() {
                               </p>
                             )}
                             {hotel.url && (
-                              <a 
+                              <a
                                 href={hotel.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
