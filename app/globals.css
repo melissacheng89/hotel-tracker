@@ -12,11 +12,11 @@ body {
 
 @keyframes pulse-border {
   0% { border-color: #A8B4D0; box-shadow: none; }
-  30% { border-color: #4A5F8A; box-shadow: 0 0 0 3px #E8ECF4; }
-  70% { border-color: #4A5F8A; box-shadow: 0 0 0 3px #E8ECF4; }
+  20% { border-color: #4A5F8A; box-shadow: 0 0 0 6px #C5D0E8, 0 0 20px rgba(74, 95, 138, 0.3); }
+  60% { border-color: #4A5F8A; box-shadow: 0 0 0 6px #C5D0E8, 0 0 20px rgba(74, 95, 138, 0.3); }
   100% { border-color: #A8B4D0; box-shadow: none; }
 }
 
 .surprise-pulse {
-  animation: pulse-border 2s ease-in-out;
+  animation: pulse-border 3s ease-in-out;
 }
