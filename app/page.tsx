@@ -180,7 +180,7 @@ export default function Home() {
         <div style={{ maxWidth: "1152px", margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "16px" }}>
             <div>
-              <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(2.5rem, 8vw, 3.5rem)", fontWeight: 300, letterSpacing: "-0.02em", color: "#1a1a1a", lineHeight: 1 }}>
+              <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(3rem, 8vw, 3.5rem)", fontWeight: 300, letterSpacing: "-0.02em", color: "#1a1a1a", lineHeight: 1 }}>
                 Checked In
               </h1>
               <p style={{ fontSize: "0.6rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginTop: "6px" }}>
@@ -312,7 +312,7 @@ export default function Home() {
           <div style={{ display: "flex", flexDirection: "column", gap: "4rem" }}>
             {sortedRegions.map((region) => (
               <div key={region}>
-                <h2 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.25rem", fontWeight: 300, color: "#1a1a1a", marginBottom: "1.5rem" }}>
+                <h2 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.5rem", fontWeight: 300, color: "#1a1a1a", marginBottom: "1.5rem" }}>
                   {region}
                 </h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
