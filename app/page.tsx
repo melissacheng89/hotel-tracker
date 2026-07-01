@@ -21,6 +21,7 @@ type Hotel = {
 
 type StatusFilter = "All" | "Bucket List" | "Visited";
 type View = "list" | "map";
+type Sort = "az" | "za" | "visited-first";
 
 const ACCENT = "#4A5F8A";
 const ACCENT_LIGHT = "#E8ECF4";
@@ -34,6 +35,7 @@ export default function Home() {
   const [view, setView] = useState<View>("list");
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<Sort>("az");
 
   useEffect(() => {
     fetch("/api/hotels")
@@ -82,6 +84,16 @@ export default function Home() {
       h.country.toLowerCase().includes(searchLower);
     return matchesStatus && matchesRegion && matchesCountry && matchesSearch;
   });
+
+  const sortHotels = (list: Hotel[]) => {
+    if (sort === "za") return [...list].sort((a, b) => b.name.localeCompare(a.name));
+    if (sort === "visited-first") return [...list].sort((a, b) => {
+      if (a.status === "Visited" && b.status !== "Visited") return -1;
+      if (a.status !== "Visited" && b.status === "Visited") return 1;
+      return a.name.localeCompare(b.name);
+    });
+    return [...list].sort((a, b) => a.name.localeCompare(b.name));
+  };
 
   const grouped = filtered.reduce((acc, hotel) => {
     const region = hotel.region || "Other";
@@ -165,14 +177,14 @@ export default function Home() {
       </header>
 
       <div style={{ maxWidth: "1152px", margin: "0 auto", padding: "24px 24px" }}>
-        <div style={{ marginBottom: "20px" }}>
+        <div style={{ display: "flex", gap: "12px", marginBottom: "20px", alignItems: "center" }}>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search hotels, cities, countries..."
             style={{
-              width: "100%",
+              flex: 1,
               padding: "10px 16px",
               borderRadius: "8px",
               border: "1px solid #e8e2d9",
@@ -184,6 +196,25 @@ export default function Home() {
             onFocus={(e) => (e.target.style.borderColor = ACCENT)}
             onBlur={(e) => (e.target.style.borderColor = "#e8e2d9")}
           />
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as Sort)}
+            style={{
+              padding: "10px 14px",
+              borderRadius: "8px",
+              border: "1px solid #e8e2d9",
+              fontSize: "0.75rem",
+              background: "white",
+              color: "#666",
+              outline: "none",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            <option value="az">A → Z</option>
+            <option value="za">Z → A</option>
+            <option value="visited-first">Visited first</option>
+          </select>
         </div>
 
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", marginBottom: "32px" }}>
@@ -250,7 +281,7 @@ export default function Home() {
                         {country}
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {grouped[region][country].map((hotel) => (
+                        {sortHotels(grouped[region][country]).map((hotel) => (
                           <div
                             key={hotel.id}
                             style={{ border: `1px solid ${ACCENT_BORDER}`, borderRadius: "8px", padding: "1.25rem", background: "white" }}
