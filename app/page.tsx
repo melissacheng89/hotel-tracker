@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 
 const HotelMap = dynamic(() => import("@/app/components/HotelMap"), {
@@ -36,6 +36,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<Sort>("az");
+  const [surpriseId, setSurpriseId] = useState<string | null>(null);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     fetch("/api/hotels")
@@ -45,6 +47,29 @@ export default function Home() {
         setLoading(false);
       });
   }, []);
+
+  const handleSurprise = () => {
+    const wishlist = hotels.filter((h) => h.status === "Bucket List");
+    if (wishlist.length === 0) return;
+    const pick = wishlist[Math.floor(Math.random() * wishlist.length)];
+    setView("list");
+    setStatusFilter("All");
+    setRegionFilter("All");
+    setCountryFilter("All");
+    setSearch("");
+    setSurpriseId(pick.id);
+    setTimeout(() => {
+      const el = cardRefs.current[pick.id];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add("surprise-pulse");
+        setTimeout(() => {
+          el.classList.remove("surprise-pulse");
+          setSurpriseId(null);
+        }, 2000);
+      }
+    }, 100);
+  };
 
   const regionOrder = [
     "N. America",
@@ -166,11 +191,27 @@ export default function Home() {
               </p>
             </div>
             <div style={{ textAlign: "right", flexShrink: 0 }}>
-              <p style={{ fontSize: "0.7rem", color: "#999" }}>
+              <p style={{ fontSize: "0.7rem", color: "#999", marginBottom: "8px" }}>
                 <span style={{ color: "#1a1a1a", fontWeight: 500 }}>{hotels.filter((h) => h.status === "Visited").length}</span> visited
                 <span style={{ margin: "0 6px", color: "#d4cfc8" }}>·</span>
                 <span style={{ color: "#1a1a1a", fontWeight: 500 }}>{hotels.filter((h) => h.status === "Bucket List").length}</span> to go
               </p>
+              <button
+                onClick={handleSurprise}
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: "999px",
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.08em",
+                  border: `1px solid ${ACCENT_BORDER}`,
+                  background: ACCENT_LIGHT,
+                  color: ACCENT,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                ✦ Surprise me
+              </button>
             </div>
           </div>
         </div>
@@ -284,9 +325,10 @@ export default function Home() {
                         {sortHotels(grouped[region][country]).map((hotel) => (
                           <div
                             key={hotel.id}
+                            ref={(el) => { cardRefs.current[hotel.id] = el; }}
                             style={{ border: `1px solid ${ACCENT_BORDER}`, borderRadius: "8px", padding: "1.25rem", background: "white" }}
                             onMouseEnter={e => (e.currentTarget.style.borderColor = ACCENT)}
-                            onMouseLeave={e => (e.currentTarget.style.borderColor = ACCENT_BORDER)}
+                            onMouseLeave={e => (e.currentTarget.style.borderColor = surpriseId === hotel.id ? ACCENT : ACCENT_BORDER)}
                           >
                             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "8px", marginBottom: "6px" }}>
                               <h3 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.15rem", fontWeight: 300, color: "#1a1a1a", lineHeight: 1.3 }}>
