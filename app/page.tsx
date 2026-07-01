@@ -312,7 +312,7 @@ export default function Home() {
           <div style={{ display: "flex", flexDirection: "column", gap: "4rem" }}>
             {sortedRegions.map((region) => (
               <div key={region}>
-                <h2 style={{ fontFamily: "var(--font-cormorant)", fontSize: "2rem", fontWeight: 300, color: "#1a1a1a", marginBottom: "1.5rem" }}>
+                <h2 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.5rem", fontWeight: 300, color: "#1a1a1a", marginBottom: "1.5rem" }}>
                   {region}
                 </h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
